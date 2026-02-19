@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>1446 حاسبة زكاة الفطرة</title>
+  <style>
+    body {
+      background-color: #e6f7ff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background-color: #007bff;
+      color: white;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 123, 255, 0.2);
+      padding: 30px;
+    }
+    .form-select, .form-control {
+      border-radius: 15px;
+    }
+    .signature {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #004080;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card text-center" style="width: 30rem;">
+  <div class="card-body">
+    <h4 class="card-title">حاسبة زكاة الفطرة للعام 1446</h4>
+
+    <table class="table table-borderless">
+      <tbody>
+        <tr>
+          <td><label for="khamsSelect">مخمس</label></td>
+          <td>
+            <select class="form-select" id="khamsSelect" onchange="khamsOnchange(); zakahCalculation();">
+              <option selected>اختار</option>
+              <option value="1">نعم</option>
+              <option value="2">لا</option>
+            </select>
+          </td>
+        </tr>
+
+        <tr class="d-none" id="schalor"></tr>
+
+        <tr>
+          <td><label for="number-of-pepole">عدد الأفراد</label></td>
+          <td>
+            <input type="number" class="form-control" id="number-of-pepole" placeholder="أدخل عدد الأفراد" oninput="zakahCalculation()">
+          </td>
+        </tr>
+
+        <tr>
+          <td><label for="catagery-of-zakah">الصنف</label></td>
+          <td>
+            <select class="form-select" id="catagery-of-zakah" onchange="zakahCalculation()">
+              <option selected>اختيار الصنف من القائمة</option>
+              <option value="1">الأرز درجة أولى</option>
+              <option value="2">الأرز درجة ثانية</option>
+              <option value="3">الأرز درجة ثالثة</option>
+              <option value="4">التمر درجة أولى</option>
+              <option value="5">التمر درجة ثانية</option>
+              <option value="7">الطحين درجة أولى</option>
+              <option value="8">الطحين درجة ثانية</option>
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <td>المبلغ:</td>
+          <td><p id="amount">-</p></td>
+        </tr>
+
+        <tr class="d-none" id="vat-display">
+          <td>الخمس:</td>
+          <td><p id="vat">-</p></td>
+        </tr>
+
+        <tr class="d-none" id="total-display">
+          <td>المجموع:</td>
+          <td><p id="total">-</p></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="signature">المهندس علي بن حسين الحنابي</p>
+  </div>
+</div>
+
+<script>
+  function zakahCalculation() {
+    var numOfPepole = document.getElementById("number-of-pepole").value;
+    var catageryOfZakah = document.getElementById("catagery-of-zakah").value;
+    var baseAmount = document.getElementById("amount");
+    var vat = document.getElementById("vat");
+    var total = document.getElementById("total");
+
+    if (!numOfPepole || catageryOfZakah === "اختيار الصنف من القائمة") {
+      baseAmount.innerHTML = "-";
+      vat.innerHTML = "-";
+      total.innerHTML = "-";
+      return;
+    }
+
+    var singleAmount = zakahPrices(catageryOfZakah);
+    var baseAmountPrice = singleAmount[0] * numOfPepole;
+    var khamstotal = singleAmount[1] * numOfPepole;
+    var totalPrice = baseAmountPrice + khamstotal;
+
+    baseAmount.innerHTML = baseAmountPrice + " ﷼ ";
+    vat.innerHTML = khamstotal + " ﷼ ";
+    total.innerHTML = totalPrice + " ﷼ ";
+  }
+
+  function khamsOnchange() {
+    var khamsSelect = document.getElementById("khamsSelect");
+    var vat = document.getElementById("vat-display");
+    var total = document.getElementById("total-display");
+    if (khamsSelect.value == 2) {
+      vat.classList.remove("d-none");
+      total.classList.remove("d-none");
+    } else {
+      vat.classList.add("d-none");
+      total.classList.add("d-none");
+    }
+  }
+
+  function zakahPrices(index) {
+    switch (index) {
+      case "1": return [30, 8];
+      case "2": return [24, 6];
+      case "3": return [21, 5];
+      case "4": return [48, 12];
+      case "5": return [39, 10];
+      case "7": return [15, 4];
+      case "8": return [9, 3];
+      default: return [0, 0];
+    }
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
