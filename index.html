@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+<title>1446 حاسبة زكاة الفطرة</title>
+
+<style>
+body{
+  font-family:'Tajawal',sans-serif;
+  background:linear-gradient(135deg,#f4f7fa,#e9eef3);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  margin:0;
+  padding:20px;
+}
+
+.card{
+  width:100%;
+  max-width:520px;
+  background:#ffffff;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  padding:35px 30px;
+  text-align:center;
+}
+
+.card-title{
+  font-weight:700;
+  font-size:1.5rem;
+  margin-bottom:30px;
+  color:#1f2d3d;
+}
+
+.table{
+  margin-bottom:0;
+}
+
+.table td{
+  vertical-align:middle;
+  color:#34495e;
+  font-weight:500;
+}
+
+label{
+  font-weight:600;
+}
+
+.form-control,
+.form-select{
+  border-radius:12px;
+  padding:10px;
+  font-size:0.95rem;
+  border:1px solid #d6dee6;
+}
+
+.form-control:focus,
+.form-select:focus{
+  border-color:#3b82f6;
+  box-shadow:0 0 0 2px rgba(59,130,246,0.15);
+}
+
+#amount,
+#vat,
+#total{
+  font-weight:700;
+  font-size:1.1rem;
+  color:#111827;
+}
+
+.signature{
+  margin-top:30px;
+  font-size:13px;
+  color:#6b7280;
+}
+
+@media (max-width:576px){
+  .card{
+    padding:25px 18px;
+  }
+  .card-title{
+    font-size:1.25rem;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+<div class="card-body">
+
+<h4 class="card-title">حاسبة زكاة الفطرة للعام 1446</h4>
+
+<table class="table table-borderless text-center">
+<tbody>
+
+<tr>
+<td><label for="khamsSelect">مخمس</label></td>
+<td>
+<select class="form-select text-center" id="khamsSelect" onchange="khamsOnchange(); zakahCalculation();">
+<option selected disabled>اختار</option>
+<option value="1">نعم</option>
+<option value="2">لا</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td><label for="number-of-pepole">عدد الأفراد</label></td>
+<td>
+<input type="number" min="1" class="form-control text-center" id="number-of-pepole" placeholder="أدخل عدد الأفراد" oninput="zakahCalculation()">
+</td>
+</tr>
+
+<tr>
+<td><label for="catagery-of-zakah">الصنف</label></td>
+<td>
+<select class="form-select text-center" id="catagery-of-zakah" onchange="zakahCalculation()">
+<option selected disabled>اختيار الصنف من القائمة</option>
+<option value="1">الأرز درجة أولى</option>
+<option value="2">الأرز درجة ثانية</option>
+<option value="3">الأرز درجة ثالثة</option>
+<option value="4">التمر درجة أولى</option>
+<option value="5">التمر درجة ثانية</option>
+<option value="7">الطحين درجة أولى</option>
+<option value="8">الطحين درجة ثانية</option>
+</select>
+</td>
+</tr>
+
+<tr>
+<td>المبلغ</td>
+<td><p id="amount">-</p></td>
+</tr>
+
+<tr class="d-none" id="vat-display">
+<td>الخمس</td>
+<td><p id="vat">-</p></td>
+</tr>
+
+<tr class="d-none" id="total-display">
+<td>المجموع</td>
+<td><p id="total">-</p></td>
+</tr>
+
+</tbody>
+</table>
+
+<p class="signature">المهندس علي بن حسين الحنابي</p>
+
+</div>
+</div>
+
+<script>
+function zakahCalculation(){
+  var numOfPepole=document.getElementById("number-of-pepole").value;
+  var catageryOfZakah=document.getElementById("catagery-of-zakah").value;
+  var baseAmount=document.getElementById("amount");
+  var vat=document.getElementById("vat");
+  var total=document.getElementById("total");
+
+  if(!numOfPepole || !catageryOfZakah){
+    baseAmount.innerHTML="-";
+    vat.innerHTML="-";
+    total.innerHTML="-";
+    return;
+  }
+
+  var singleAmount=zakahPrices(catageryOfZakah);
+  var baseAmountPrice=singleAmount[0]*numOfPepole;
+  var khamstotal=singleAmount[1]*numOfPepole;
+  var totalPrice=baseAmountPrice+khamstotal;
+
+  baseAmount.innerHTML=baseAmountPrice+" ﷼";
+  vat.innerHTML=khamstotal+" ﷼";
+  total.innerHTML=totalPrice+" ﷼";
+}
+
+function khamsOnchange(){
+  var khamsSelect=document.getElementById("khamsSelect");
+  var vat=document.getElementById("vat-display");
+  var total=document.getElementById("total-display");
+
+  if(khamsSelect.value=="2"){
+    vat.classList.remove("d-none");
+    total.classList.remove("d-none");
+  }else{
+    vat.classList.add("d-none");
+    total.classList.add("d-none");
+  }
+}
+
+function zakahPrices(index){
+  switch(index){
+    case "1": return [30,8];
+    case "2": return [24,6];
+    case "3": return [21,5];
+    case "4": return [48,12];
+    case "5": return [39,10];
+    case "7": return [15,4];
+    case "8": return [9,3];
+    default: return [0,0];
+  }
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
+```
